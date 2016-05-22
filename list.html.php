@@ -8,6 +8,8 @@ if(!function_exists('current_user_can')){
 
 function html_showlist( $rows,  $pageNav,$sort,$cat_row){
   global $wpdb;
+  $query="SELECT * FROM ".$wpdb->prefix."product_lists";
+  $result=$wpdb->get_results($query);
   ?>
   <div class="wrap">
     <?php $path_site2 = plugins_url("./images", __FILE__); ?>
@@ -19,6 +21,7 @@ function html_showlist( $rows,  $pageNav,$sort,$cat_row){
             <h2>Product List
               <a onclick="window.location.href='admin.php?page=product_list&task=add_cat'" class="uk-button uk-button-small uk-button-primary" >Add New List</a>
             </h2>
+
             <div class="uk-overflow-container">
               <table class="uk-table uk-table-striped uk-border-circle uk-table-hover product-list">
                 <thead>
@@ -32,26 +35,20 @@ function html_showlist( $rows,  $pageNav,$sort,$cat_row){
                    </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>ID</td>
-                    <td>Title</td>
-                    <td>Subtitle</td>
-                    <td>Description</td>
-                    <td>Value</td>
-                    <td>
-                      <div class="uk-button uk-button-small"> <i class="uk-icon uk-icon-trash"></i> Delete</div>
-                    </td>
-                   </tr>
-                   <tr>
-                    <td>ID</td>
-                    <td>Title</td>
-                    <td>Subtitle</td>
-                    <td>Description</td>
-                    <td>Value</td>
-                    <td>
-                      <div class="uk-button uk-button-small"> <i class="uk-icon uk-icon-trash"></i> Delete</div>
-                    </td>
-                   </tr>
+                  <?php
+                    for($i=0; $i<count($result);$i++){
+                  ?>
+                    <tr>
+                      <td><?php echo $result[$i]->id; ?></td>
+                      <td><?php echo $result[$i]->title; ?></td>
+                      <td><?php echo $result[$i]->subtitle; ?></td>
+                      <td><?php echo $result[$i]->description; ?></td>
+                      <td><?php echo $result[$i]->value; ?></td>
+                      <td>
+                        <div class="uk-button uk-button-small"> <i class="uk-icon uk-icon-trash"></i> Delete</div>
+                      </td>
+                     </tr>
+                  <?php } ?>
                 </tbody>
               </table>
             </div>
