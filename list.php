@@ -53,16 +53,23 @@ function project_listing_options_panel() {
 }
 
 function display_product_lists() {
-  // require_once("list.php");
-  // require_once("list.html.php");
+  require_once("list.html.php");
+  html_showlist(1,1,'',1);
+
 }
 function list_licensing() {
-  // require_once("list.php");
-  // require_once("list.html.php");
+  $plug = get_plugin_data( ABSPATH . 'wp-content/plugins/product-listing/list.php' );
+
+  echo "<p>" .
+    $plug['Description']
+  . "</p>";
 }
 
 function list_admin_script() {
+  wp_enqueue_media();
 
+  wp_enqueue_style("uikit_css", plugins_url("style/uikit.almost-flat.min.css", __FILE__), FALSE);
+  wp_enqueue_style("main_css", plugins_url("style/main.css", __FILE__), FALSE);
 }
 function list_options_admin_script() {
 
