@@ -24,22 +24,22 @@ function project_listing_options_panel() {
     'Theme page title',
     'Product List',
     'delete_pages',
-    'display_product_lists',
-    'display_product_lists',
+    'list_group',
+    'list_group',
     plugins_url('images/sidebar.icon-16x16.png', __FILE__)
   );
 
   add_submenu_page(
-    'display_product_lists',
-    'List',
-    'List',
+    'list_group',
+    'List Group',
+    'List Group',
     'delete_pages',
-    'display_product_lists',
-    'display_product_lists'
+    'list_group',
+    'list_group'
   );
 
   $page_option = add_submenu_page(
-    'display_product_lists',
+    'list_group',
     'Licensing',
     'Licensing',
     'manage_options',
@@ -52,11 +52,94 @@ function project_listing_options_panel() {
 
 }
 
-function display_product_lists() {
+function list_group() {
   require_once("list.html.php");
-  html_showlist(1,1,'',1);
 
+  // format params task
+  if (isset($_GET["task"]))
+    $task = esc_html($_GET["task"]);
+  else
+    $task = '';
+
+  // format params id
+  if (isset($_GET["id"]))
+    $id = intval($_GET["id"]);
+  else
+    $id = 0;
+
+  switch ($task) {
+    case 'add_group':
+      add_group();
+      break;
+    case 'edit_list':
+      edit_list();
+      break;
+    case 'remove_group':
+      remove_group();
+      break;
+    default:
+      show_group();
+      break;
+  }
 }
+
+function show_group() {
+  global $wpdb;
+  $grouptable = $wpdb->prefix."product_list_group";
+  $grouplist = $wpdb->prefix."product_lists";
+
+  $query = "SELECT plg.id, pl.group_id, plg.name, plg.status, count(DISTINCT pl.id) AS listcount FROM " .
+          $grouptable . " plg LEFT JOIN " . $grouplist .
+          " pl ON plg.id = pl.group_id GROUP BY plg.id, pl.group_id, plg.name, plg.status";
+
+  $result=$wpdb->get_results($query);
+
+  html_showgroup($result,1,'',1);
+}
+
+function add_group() {
+  global $wpdb;
+
+  $addQuery = "INSERT INTO `" . $wpdb->prefix ."product_list_group" .
+              "` ( `name`, `status`) VALUES ( 'New Group', '1')";
+  $wpdb->query($addQuery);
+
+  header('Location: admin.php?page=list_group&task=edit_list&id=' . $wpdb->insert_id);
+}
+
+function edit_list() {
+  global $wpdb;
+
+  // format params id
+  if (isset($_GET["id"]))
+    $id = intval($_GET["id"]);
+  else
+    $id = 0;
+
+  $groupQuery  = "SELECT * FROM `" . $wpdb->prefix . "product_list_group` ORDER BY id ASC";
+  $groupResult = $wpdb->get_results($groupQuery);
+
+  $listQuery  = "SELECT * FROM `".$wpdb->prefix."product_lists` WHERE group_id='" . $id . "'";
+  $listResult = $wpdb->get_results($listQuery);
+
+  html_showlist($groupResult, $listResult, $id);
+}
+
+function remove_group() {
+  global $wpdb;
+
+  // format params id
+  if (isset($_GET["id"]))
+    $id = intval($_GET["id"]);
+  else
+    $id = 0;
+
+  $removeQuery = "DELETE FROM ".$wpdb->prefix."product_list_group WHERE id = " . $id . " ";
+  $wpdb->query($removeQuery);
+
+  header('Location: admin.php?page=list_group');
+}
+
 function list_licensing() {
   $plug = get_plugin_data( ABSPATH . 'wp-content/plugins/product-listing/list.php' );
 
@@ -70,6 +153,7 @@ function list_admin_script() {
 
   wp_enqueue_style("uikit_css", plugins_url("style/uikit.almost-flat.min.css", __FILE__), FALSE);
   wp_enqueue_style("main_css", plugins_url("style/main.css", __FILE__), FALSE);
+  wp_enqueue_script("simple_slider_js",  plugins_url("js/uikit.min.js", __FILE__), FALSE);
 }
 function list_options_admin_script() {
 

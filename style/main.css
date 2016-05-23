@@ -1,7 +1,18 @@
 .product-list {
-  border: 1px solid #dddddd;
+  border : 1px solid #dddddd;
 }
 .product-list > thead {
-  background: #cccccc;
+  background : #cccccc;
 }
 
+.uk-tab > li > a {
+  background : #fafafa;
+  color      : #0b5f90;
+  outline    : 0;
+  border     : 1px solid #e5e5e5;
+}
+.uk-tab > li > a:hover,
+.uk-tab > li > a:focus {
+  border-bottom : 1px solid #fafafa;
+  outline       : 0;
+}
