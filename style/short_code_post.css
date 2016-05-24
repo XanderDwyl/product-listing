@@ -1,0 +1,23 @@
+#wpadminbar,.auto-fold #adminmenu, .auto-fold #adminmenu li.menu-top, .auto-fold #adminmenuback, .auto-fold #adminmenuwrap {
+	display: none;
+}
+
+#wpcontent {
+	margin-top: -55px;
+}
+
+.wp-core-ui .button {margin:0px 0px 0px 10px !important;}
+
+#save-buttom {display:none;}
+
+h3 {
+	margin:0 0 15px 0;
+}
+
+#wpwrap > #wpcontent {
+  margin: 0;
+  padding: 0 20px;
+  box-sizing: content-box;
+}
+
+#wpwrap > #wpcontent

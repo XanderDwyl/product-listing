@@ -19,6 +19,23 @@ if($plugin_info['Version'] > '0'){
   add_action('admin_menu', 'project_listing_options_panel');
 }
 
+// add buttons in wp pages editor
+add_action('media_buttons_context', 'add_product_list_button');
+function add_product_list_button($context) {
+
+  $img = plugins_url( '/images/sidebar.icon-16x16.png' , __FILE__ );
+  $container_id = 'product_list';
+
+  $title = 'Select Huge IT Slider to insert into post';
+
+  $context .= '<a class="button thickbox" title="Select product list to insert into post"    href="?page=list_group&task=add_shortcode_post&TB_iframe=1&width=400&inlineId='.$container_id.'">
+    <span class="wp-media-buttons-icon" style="background: url('.$img.'); background-repeat: no-repeat; background-position: left bottom;"></span>
+  Add Product List
+  </a>';
+
+  return $context;
+}
+
 function project_listing_options_panel() {
   $page_cat = add_menu_page(
     'Theme page title',
@@ -55,28 +72,23 @@ function project_listing_options_panel() {
 function list_group() {
   require_once("list.html.php");
 
-  // format params task
-  if (isset($_GET["task"]))
-    $task = esc_html($_GET["task"]);
-  else
-    $task = '';
-
-  // format params id
-  if (isset($_GET["id"]))
-    $id = intval($_GET["id"]);
-  else
-    $id = 0;
-
-  switch ($task) {
+  switch (formatGetValue('task')) {
     case 'add_group':
       add_group();
       break;
+
+    case 'add_shortcode_post':
+      add_shortcode_list();
+      break;
+
     case 'edit_list':
       edit_list();
       break;
+
     case 'remove_group':
       remove_group();
       break;
+
     default:
       show_group();
       break;
@@ -110,11 +122,7 @@ function add_group() {
 function edit_list() {
   global $wpdb;
 
-  // format params id
-  if (isset($_GET["id"]))
-    $id = intval($_GET["id"]);
-  else
-    $id = 0;
+  $id = formatGetValue('id');
 
   $groupQuery  = "SELECT * FROM `" . $wpdb->prefix . "product_list_group` ORDER BY id ASC";
   $groupResult = $wpdb->get_results($groupQuery);
@@ -128,16 +136,30 @@ function edit_list() {
 function remove_group() {
   global $wpdb;
 
-  // format params id
-  if (isset($_GET["id"]))
-    $id = intval($_GET["id"]);
-  else
-    $id = 0;
-
-  $removeQuery = "DELETE FROM ".$wpdb->prefix."product_list_group WHERE id = " . $id . " ";
+  $removeQuery = "DELETE FROM ".$wpdb->prefix."product_list_group WHERE id = " . formatGetValue('id') . " ";
   $wpdb->query($removeQuery);
 
   header('Location: admin.php?page=list_group');
+}
+
+function formatGetValue($key) {
+
+  switch ($key) {
+    case 'task':
+      $val = '';
+      if (isset($_GET["task"])) {
+        $val = esc_html($_GET["task"]);
+      }
+      break;
+
+    default:
+      $val = 0;
+      if (isset($_GET[$key])) {
+        $val = intval($_GET[$key]);
+      }
+  }
+
+  return $val;
 }
 
 function list_licensing() {
@@ -157,4 +179,24 @@ function list_admin_script() {
 }
 function list_options_admin_script() {
 
+}
+
+function add_shortcode_list() {
+  global $wpdb;
+  wp_enqueue_media();
+
+  wp_enqueue_style("short_code_css", plugins_url("style/short_code_post.css", __FILE__), FALSE);
+  wp_enqueue_script("short_code_js",  plugins_url("js/short_code_post.js", __FILE__), FALSE);
+
+  $grouptable = $wpdb->prefix."product_list_group";
+  $grouplist = $wpdb->prefix."product_lists";
+
+  $query = "SELECT plg.id, pl.group_id, plg.name, plg.status, count(DISTINCT pl.id) AS listcount FROM " .
+          $grouptable . " plg LEFT JOIN " . $grouplist .
+          " pl ON plg.id = pl.group_id GROUP BY plg.id, pl.group_id, plg.name, plg.status";
+
+  $result=$wpdb->get_results($query);
+
+  // var_dump($result;
+  show_shortcode_list_form($result);
 }

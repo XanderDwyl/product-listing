@@ -55,9 +55,8 @@ function html_showgroup( $results,  $pageNav,$sort,$cat_row){
         </div>
       </div>
   </div>
-<?php } ?>
+<?php }
 
-<?php
 function html_showlist($title, $body, $id) {
   ?>
   <div class="wrap">
@@ -92,27 +91,27 @@ function html_showlist($title, $body, $id) {
                 <div class="uk-width-medium-2-3">
                   <form class="uk-form uk-form-horizontal">
                     <div class="uk-form-row">
-                      <label class="uk-form-label" for="form-h-it">Title</label>
+                      <label class="uk-form-label uk-text-right uk-text-bold" for="title<? echo $i; ?>">Title</label>
                       <div class="uk-form-controls">
-                        <input type="text" id="form-h-it" placeholder="Title" value="<?php echo $body[$i]->title; ?>">
+                        <input type="text" id="title<? echo $i; ?>" placeholder="Title" value="<?php echo $body[$i]->title; ?>">
                       </div>
                     </div>
                     <div class="uk-form-row">
-                      <label class="uk-form-label" for="form-h-it">Sub Title</label>
+                      <label class="uk-form-label uk-text-right uk-text-bold" for="subtitle<? echo $i; ?>">Sub Title</label>
                       <div class="uk-form-controls">
-                        <input type="text" id="form-h-it" placeholder="Sub Title" value="<?php echo $body[$i]->subtitle; ?>">
+                        <input type="text" id="subtitle<? echo $i; ?>" placeholder="Sub Title" value="<?php echo $body[$i]->subtitle; ?>">
                       </div>
                     </div>
                     <div class="uk-form-row">
-                      <label class="uk-form-label" for="form-h-it">Description</label>
+                      <label class="uk-form-label uk-text-right uk-text-bold" for="description<? echo $i; ?>">Description</label>
                       <div class="uk-form-controls">
-                        <textarea id="form-h-t" cols="30" rows="5" placeholder="Textarea text"><?php echo $body[$i]->description; ?></textarea>
+                        <textarea id="description<? echo $i; ?>" cols="30" rows="5" placeholder="Textarea text"><?php echo $body[$i]->description; ?></textarea>
                       </div>
                     </div>
                     <div class="uk-form-row">
-                      <label class="uk-form-label" for="form-h-it">Value</label>
+                      <label class="uk-form-label uk-text-right uk-text-bold" for="value<? echo $i; ?>">Value</label>
                       <div class="uk-form-controls">
-                        <input type="text" id="form-h-it" placeholder="Value" value="<?php echo $body[$i]->value; ?>">
+                        <input type="text" id="value<? echo $i; ?>" placeholder="Value" value="<?php echo $body[$i]->value; ?>">
                       </div>
                     </div>
                   </form>
@@ -124,5 +123,27 @@ function html_showlist($title, $body, $id) {
 
     </div>
   </div>
-<?php } ?>
+<?php }
 
+function show_shortcode_list_form($results) {
+?>
+  <div class='clear'></div>
+  <div class="uk-alert">
+    <p>Select the List Group</p>
+  </div>
+
+  <div id='product_list'>
+    <ul class="uk-list uk-list-striped list-inline">
+      <?php for($i=0; $i<count($results);$i++){ ?>
+        <li>
+          <?php echo $results[$i]->name; ?>
+          <div class="uk-navbar-flip">
+            <button class="uk-button uk-button-small btn-insert-list" data-id=<?php echo $results[$i]->id; ?>>
+              <i class="uk-icon uk-icon-plus-circle"></i> Insert List
+            </button>
+          </div>
+        </li>
+      <?php } ?>
+    </ul>
+  </div>
+<?php } ?>
