@@ -1,4 +1,8 @@
-#wpadminbar,.auto-fold #adminmenu, .auto-fold #adminmenu li.menu-top, .auto-fold #adminmenuback, .auto-fold #adminmenuwrap {
+#wpadminbar,
+.auto-fold #adminmenu,
+.auto-fold #adminmenu li.menu-top,
+.auto-fold #adminmenuback,
+.auto-fold #adminmenuwrap {
 	display: none;
 }
 

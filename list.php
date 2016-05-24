@@ -11,11 +11,11 @@ License: GPLv2 or later http://www.gnu.org/licenses/gpl-2.0.html
 */
 
 require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+include_once dirname( __FILE__ ) . '/function/listing.php';
 $plugin_info = get_plugin_data( ABSPATH . 'wp-content/plugins/product-listing/list.php' );
 
 if($plugin_info['Version'] > '0'){
-  include_once dirname( __FILE__ ) . '/function/listing.php';
-  register_activation_hook( __FILE__, array( 'ListingClass', 'plugin_initialize' ) );
+  register_activation_hook( __FILE__, array( 'ListingClass', 'plugin_initialize_table' ) );
   add_action('admin_menu', 'project_listing_options_panel');
 }
 
@@ -49,7 +49,7 @@ function project_listing_options_panel() {
     'list_licensing'
   );
 
-  add_action('admin_print_styles-' . $page_cat, 'list_admin_script');
+  add_action('admin_print_styles-' . $page_cat, ListingClass::list_script());
 
 }
 
@@ -111,10 +111,12 @@ function edit_list() {
   $groupQuery  = "SELECT * FROM `" . $wpdb->prefix . "product_list_group` ORDER BY id ASC";
   $groupResult = $wpdb->get_results($groupQuery);
 
+  var_dump($groupResult);
+
   $listQuery  = "SELECT * FROM `".$wpdb->prefix."product_lists` WHERE group_id='" . $id . "'";
   $listResult = $wpdb->get_results($listQuery);
 
-  html_showlist($groupResult, $listResult, $id);
+  html_showlist($groupResult->get_row(), $listResult, $id);
 }
 
 function remove_group() {
@@ -154,18 +156,10 @@ function list_licensing() {
   . "</p>";
 }
 
-function list_admin_script() {
-  wp_enqueue_media();
-
-  wp_enqueue_style("uikit_css", plugins_url("style/uikit.almost-flat.min.css", __FILE__), FALSE);
-  wp_enqueue_style("main_css", plugins_url("style/main.css", __FILE__), FALSE);
-  wp_enqueue_script("simple_slider_js",  plugins_url("js/uikit.min.js", __FILE__), FALSE);
-}
-
 function add_shortcode_list() {
   global $wpdb;
-  wp_enqueue_media();
 
+  wp_enqueue_media();
   wp_enqueue_style("short_code_css", plugins_url("style/short_code_post.css", __FILE__), FALSE);
   wp_enqueue_script("short_code_js",  plugins_url("js/short_code_post.js", __FILE__), FALSE);
 
@@ -178,6 +172,5 @@ function add_shortcode_list() {
 
   $result=$wpdb->get_results($query);
 
-  // var_dump($result;
   show_shortcode_list_form($result);
 }

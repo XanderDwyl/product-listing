@@ -16,23 +16,22 @@
     return $context;
   }
 
-  // add_shortcode('huge_it_slider', 'huge_it_slider_images_list_shotrcode');
+  add_shortcode('list_group', 'product_list_shortcode');
+  function product_list_shortcode($atts) {
+    include_once dirname( __FILE__ ) . '/../client/front_end.html.php';
 
-  // function   huge_it_cat_images_list($id)
-  // {
-  //     require_once("slider_front_end.html.php");
-  //     require_once("slider_front_end.php");
-  //     if (isset($_GET['product_id'])) {
-  //         if (isset($_GET['view'])) {
-  //             if (esc_html($_GET['view']) == 'huge_itslider') {
-  //                 return showPublishedimages_1($id);
-  //             } else {
-  //                 return front_end_single_product(esc_html($_GET['product_id']));
-  //             }
-  //         } else {
-  //             return front_end_single_product(esc_html($_GET['product_id']));
-  //         }
-  //     } else {
-  //         return showPublishedimages_1($id);
-  //     }
-  // }
+    global $wpdb;
+    $groupQuery  = "SELECT * FROM `" . $wpdb->prefix . "product_list_group` WHERE id='" . $atts['id'] . "'";
+    $title = $wpdb->get_results($groupQuery)[0];
+
+    $listQuery  = "SELECT * FROM `".$wpdb->prefix."product_lists` WHERE group_id='" . $atts['id'] . "'";
+    $data = $wpdb->get_results($listQuery);
+
+    wp_enqueue_media();
+    wp_enqueue_style("list_client_css", plugins_url("/../style/list_client.css", __FILE__), FALSE);
+    wp_enqueue_script("list_uikit_js",  plugins_url("/../js/uikit.min.js", __FILE__), FALSE);
+
+    render_extracted_code($title->name, $data);
+  }
+
+

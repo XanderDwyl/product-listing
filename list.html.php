@@ -65,9 +65,7 @@ function html_showlist($title, $body, $id) {
     <div style="clear:both;"></div>
     <div id="poststuff">
       <ul class="uk-tab">
-        <?php
-          for($i=0; $i<count($title);$i++){
-        ?>
+        <?php for($i=0; $i<count($title);$i++){ ?>
           <li <?php if($title[$i]->id == $id) { echo "class='uk-active'"; } ?> >
             <a href="/wp-admin/admin.php?page=list_group&task=edit_list&id=<?php echo $title[$i]->id; ?>"><?php echo $title[$i]->name; ?></a>
           </li>
@@ -92,7 +90,9 @@ function html_showlist($title, $body, $id) {
                   <form class="uk-form uk-form-horizontal">
                     <div class="uk-form-row">
                       <label class="uk-form-label uk-text-right uk-text-bold" for="title<? echo $i; ?>">Title</label>
+                      <label class="uk-form-label uk-text-right uk-text-bold" for="title<? echo $i; ?>">Title</label>
                       <div class="uk-form-controls">
+                        <input type="text" id="title<? echo $i; ?>" placeholder="Title" value="<?php echo $body[$i]->title; ?>">
                         <input type="text" id="title<? echo $i; ?>" placeholder="Title" value="<?php echo $body[$i]->title; ?>">
                       </div>
                     </div>
