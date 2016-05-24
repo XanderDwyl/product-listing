@@ -19,22 +19,7 @@ if($plugin_info['Version'] > '0'){
   add_action('admin_menu', 'project_listing_options_panel');
 }
 
-// add buttons in wp pages editor
-add_action('media_buttons_context', 'add_product_list_button');
-function add_product_list_button($context) {
-
-  $img = plugins_url( '/images/sidebar.icon-16x16.png' , __FILE__ );
-  $container_id = 'product_list';
-
-  $title = 'Select Huge IT Slider to insert into post';
-
-  $context .= '<a class="button thickbox" title="Select product list to insert into post"    href="?page=list_group&task=add_shortcode_post&TB_iframe=1&width=400&inlineId='.$container_id.'">
-    <span class="wp-media-buttons-icon" style="background: url('.$img.'); background-repeat: no-repeat; background-position: left bottom;"></span>
-  Add Product List
-  </a>';
-
-  return $context;
-}
+include_once dirname( __FILE__ ) . '/function/add_list_options.php';
 
 function project_listing_options_panel() {
   $page_cat = add_menu_page(
@@ -55,7 +40,7 @@ function project_listing_options_panel() {
     'list_group'
   );
 
-  $page_option = add_submenu_page(
+  add_submenu_page(
     'list_group',
     'Licensing',
     'Licensing',
@@ -65,7 +50,6 @@ function project_listing_options_panel() {
   );
 
   add_action('admin_print_styles-' . $page_cat, 'list_admin_script');
-  add_action('admin_print_styles-' . $page_option, 'list_options_admin_script');
 
 }
 
@@ -176,9 +160,6 @@ function list_admin_script() {
   wp_enqueue_style("uikit_css", plugins_url("style/uikit.almost-flat.min.css", __FILE__), FALSE);
   wp_enqueue_style("main_css", plugins_url("style/main.css", __FILE__), FALSE);
   wp_enqueue_script("simple_slider_js",  plugins_url("js/uikit.min.js", __FILE__), FALSE);
-}
-function list_options_admin_script() {
-
 }
 
 function add_shortcode_list() {
